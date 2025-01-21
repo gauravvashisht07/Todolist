@@ -1,72 +1,50 @@
-// DOM Elements
-const addBtn = document.getElementById('add-btn');
-const todoInput = document.getElementById('todo-input');
-const todoList = document.getElementById('todo-list');
-const themeToggle = document.getElementById('theme-toggle');
+// Grab the input and list elements
+const todoInput = document.getElementById("todoInput");
+const todoList = document.getElementById("todoList");
 
-// Add Todo Item Functionality
-addBtn.addEventListener('click', addTodo);
-todoInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') addTodo();
-});
-
-// Toggle Dark Mode
-themeToggle.addEventListener('click', toggleTheme);
-
-// Add Todo
+// Function to add a new Todo
 function addTodo() {
-    const todoText = todoInput.value.trim();
-    if (!todoText) {
-        alert("Please enter something.");
-        return;
-    }
+  const task = todoInput.value.trim();
 
-    // Create Todo Item
-    const li = document.createElement('li');
-    li.classList.add(
-        'flex',
-        'justify-between',
-        'items-center',
-        'bg-purple-100',
-        'dark:bg-gray-700',
-        'p-4',
-        'rounded-lg',
-        'shadow-md',
-        'hover:shadow-lg',
-        'transition'
-    );
+  if (task === "") {
+    alert("Please enter a valid task!");
+    return;
+  }
 
-    li.innerHTML = `
-        <span class="todo-text text-gray-800 dark:text-white">${todoText}</span>
-        <div>
-            <button class="check-btn text-green-500 px-2 hover:text-green-700">
-                ✓
-            </button>
-            <button class="delete-btn text-red-500 px-2 hover:text-red-700">
-                ✕
-            </button>
-        </div>
-    `;
+  // Create a new list item
+  const li = document.createElement("li");
+  li.className = "flex justify-between items-center bg-gray-100 p-3 rounded-lg shadow-md";
 
-    // Mark as Done
-    li.querySelector('.check-btn').addEventListener('click', () => {
-        li.classList.toggle('line-through');
-        li.classList.toggle('text-gray-400');
-    });
+  li.innerHTML = `
+    <span class="text-gray-700">${task}</span>
+    <div class="flex items-center gap-2">
+      <button onclick="editTodo(this)"
+        class="bg-yellow-400 text-white px-2 py-1 rounded-lg shadow hover:bg-yellow-500">
+        Edit
+      </button>
+      <button onclick="deleteTodo(this)"
+        class="bg-red-500 text-white px-2 py-1 rounded-lg shadow hover:bg-red-600">
+        Delete
+      </button>
+    </div>
+  `;
 
-    // Delete Item
-    li.querySelector('.delete-btn').addEventListener('click', () => {
-        todoList.removeChild(li);
-    });
-
-    // Append Todo Item
-    todoList.appendChild(li);
-
-    // Clear Input
-    todoInput.value = '';
+  // Add the new item to the list and clear the input
+  todoList.appendChild(li);
+  todoInput.value = "";
 }
 
-// Toggle Light/Dark Theme
-function toggleTheme() {
-    document.body.classList.toggle('dark');
+// Function to edit a Todo item
+function editTodo(button) {
+  const currentTask = button.parentElement.previousElementSibling;
+  const updatedTask = prompt("Update your task:", currentTask.textContent);
+
+  if (updatedTask && updatedTask.trim() !== "") {
+    currentTask.textContent = updatedTask;
+  }
+}
+
+// Function to delete a Todo item
+function deleteTodo(button) {
+  button.parentElement.parentElement.remove();
 }
